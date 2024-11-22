@@ -13,12 +13,12 @@ const Introduction: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            {/* Heading */}
+          
             <Text style={styles.header}>FitnessEssence</Text>
           
            
 
-            {/* Login Button */}
+          
             <TouchableOpacity 
                 style={[styles.button, styles.loginButton]} 
                 onPress={() => handleNavigate('login')}

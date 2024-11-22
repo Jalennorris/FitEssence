@@ -11,49 +11,65 @@ interface Exercise {
 
 const workoutRoutines = {
   weightLoss: [
-    { name: 'Jumping Jacks', sets: 3, reps: 30, description: 'A full-body cardio exercise.' },
-    { name: 'Push-ups', sets: 3, reps: 15, description: 'Strengthen your upper body.' },
-    { name: 'Burpees', sets: 3, reps: 10, description: 'A high-intensity full-body workout.' },
+    { name: 'Jumping Jacks', sets: 3, reps: 30, description: 'A full-body cardio exercise to burn calories.' },
+    { name: 'Push-ups', sets: 3, reps: 15, description: 'Strengthen your upper body and core.' },
+    { name: 'Burpees', sets: 3, reps: 10, description: 'A high-intensity full-body workout to boost metabolism.' },
+    { name: 'Mountain Climbers', sets: 3, reps: 30, description: 'Cardio exercise that targets your core and legs.' },
+    { name: 'High Knees', sets: 3, reps: 40, description: 'Boosts heart rate and works your legs and core.' },
+    { name: 'Lunges', sets: 3, reps: 12, description: 'A lower body exercise that improves balance and endurance.' },
+    { name: 'Skater Jumps', sets: 3, reps: 20, description: 'A dynamic movement that targets the legs and glutes.' },
+    { name: 'Plank', sets: 3, reps: 30, description: 'Core stability exercise (hold for 30 seconds per set).' },
+    { name: 'Box Jumps', sets: 3, reps: 12, description: 'Explosive lower body movement to improve strength and agility.' },
+    { name: 'Bicycle Crunches', sets: 3, reps: 20, description: 'Core exercise targeting the abs and obliques.' },
   ],
   muscleGain: [
-    { name: 'Squats', sets: 4, reps: 12, description: 'Strengthens lower body.' },
-    { name: 'Bench Press', sets: 4, reps: 8, description: 'Targets the chest.' },
-    { name: 'Deadlifts', sets: 4, reps: 10, description: 'Works on your back and hamstrings.' },
+    { name: 'Squats', sets: 4, reps: 12, description: 'Strengthens your lower body, including quads, hamstrings, and glutes.' },
+    { name: 'Bench Press', sets: 4, reps: 8, description: 'Targets the chest, shoulders, and triceps.' },
+    { name: 'Deadlifts', sets: 4, reps: 10, description: 'Works on your back, hamstrings, and glutes.' },
+    { name: 'Pull-ups', sets: 3, reps: 8, description: 'A bodyweight exercise that targets your back and biceps.' },
+    { name: 'Overhead Press', sets: 4, reps: 8, description: 'Works the shoulders, upper chest, and triceps.' },
   ],
 };
 
 const WorkoutScreen: React.FC = () => {
   const router = useRouter();
   const { goal } = useLocalSearchParams() as { goal: 'weightLoss' | 'muscleGain' };
-
   const workout = workoutRoutines[goal];
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const currentExercise = workout[currentIndex];
 
-  // Navigate to the ExerciseScreen with exercise list and current index
+  const [randomWorkouts, setRandomWorkouts] = useState<Exercise[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+
+  
+  const generateRandomWorkouts = () => {
+    if(!workout){
+      Alert.alert('Error','Invalid goal slected')
+      return;
+    }
+    
+    const selectedWorkouts: Exercise[] = [];
+    const workoutLength = workout.length;
+
+    
+    for (let i = 0; i < 5; i++) {
+      const randomIndex = Math.floor(Math.random() * workoutLength);
+      selectedWorkouts.push(workout[randomIndex]);
+    }
+
+    setRandomWorkouts(selectedWorkouts); 
+  };
+
   const handleStartExercise = () => {
+    if(!randomWorkouts){
+      Alert.alert('No Work', 'please generate workout')
+    }
     router.push({
-      pathname: '/exercise', 
+      pathname: '/exercise',
       params: {
-        exercises: JSON.stringify(workout),
+        exercises: JSON.stringify(randomWorkouts), // Pass random workouts
         currentIndex: currentIndex.toString(),
       },
     });
-  };
-
-  const handleNextExercise = () => {
-    if (currentIndex < workout.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      Alert.alert('Workout Complete!', 'You have finished all the exercises in this routine.');
-      router.push('/'); // Navigate back to home or a summary page
-    }
-  };
-
-  const handlePreviousExercise = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
   };
 
   return (
@@ -61,22 +77,31 @@ const WorkoutScreen: React.FC = () => {
       <Text style={styles.title}>
         {goal === 'weightLoss' ? 'Weight Loss Routine' : 'Muscle Gain Routine'}
       </Text>
+
+      {/* Button to generate random workouts */}
+      <View style={styles.buttonContainer}>
+        <Button title="Generate 5 Random Workouts" onPress={generateRandomWorkouts} />
+      </View>
+
       <View style={styles.exerciseContainer}>
-        <Text style={styles.exerciseName}>{currentExercise.name}</Text>
-        <Text style={styles.exerciseDetails}>
-          {currentExercise.sets} sets of {currentExercise.reps} reps
-        </Text>
-        <Text style={styles.exerciseDescription}>{currentExercise.description}</Text>
+        {randomWorkouts.length > 0 ? (
+          randomWorkouts.map((exercise, index) => (
+            <View key={index} style={styles.exerciseItem}>
+              <Text style={styles.exerciseName}>{exercise.name}</Text>
+              <Text style={styles.exerciseDetails}>
+                {exercise.sets} sets of {exercise.reps} reps
+              </Text>
+              <Text style={styles.exerciseDescription}>{exercise.description}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noWorkouts}>No workouts generated yet. Press the button above.</Text>
+        )}
       </View>
 
       {/* Start Exercise Button */}
       <View style={styles.buttonContainer}>
-        <Button title="Start Exercise" onPress={handleStartExercise} />
-      </View>
-
-      <View style={styles.setNavigation}>
-        <Button title="Previous Exercise" onPress={handlePreviousExercise} disabled={currentIndex === 0} />
-        <Button title="Next Exercise" onPress={handleNextExercise} />
+        <Button title="Start Workout" onPress={handleStartExercise} disabled={randomWorkouts.length === 0} />
       </View>
 
       <View style={styles.footer}>
@@ -101,6 +126,8 @@ const styles = StyleSheet.create({
   },
   exerciseContainer: {
     marginBottom: 30,
+  },
+  exerciseItem: {
     padding: 15,
     backgroundColor: '#fff',
     borderRadius: 10,
@@ -111,6 +138,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 4,
+    marginBottom: 10,
   },
   exerciseName: {
     fontSize: 22,
@@ -132,16 +160,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
   },
-  setNavigation: {
-    marginTop: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   footer: {
     marginTop: 20,
     alignItems: 'center',
   },
+  noWorkouts: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#888',
+  },
 });
 
 export default WorkoutScreen;
-

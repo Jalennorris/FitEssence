@@ -18,7 +18,7 @@ const Signup: React.FC = () => {
 
     const handleSignup = () => {
         try {
-            /
+            
             if (!data.email || !data.username || !data.password || !data.confirmPassword) {
                 setError("Please fill in all fields");
             } else if (data.password !== data.confirmPassword) {
@@ -32,6 +32,9 @@ const Signup: React.FC = () => {
             }
         } catch (error) {
             console.log("Signup failed", error);
+        }
+        finally{
+            console.log("Signup finally executed")
         }
     };
 

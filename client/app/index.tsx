@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Import the Icon from the library
 
 interface Exercise {
   name: string;
@@ -10,22 +11,29 @@ interface Exercise {
 }
 
 const HomeScreen: React.FC = () => {
+  const [menuOpen, setMenuOpen] = useState(false); 
   const router = useRouter();
 
   const selectGoal = (goal: 'weightLoss' | 'muscleGain') => {
-    // Navigate to the workout screen with goal
     router.push({ pathname: '/workout', params: { goal } });
   };
 
   const startExercise = (exercise: Exercise) => {
-    // Navigate to the ExerciseScreen with exercise data
     router.push({
       pathname: '/exercise',
       params: {
-        exercises: JSON.stringify([exercise]), // Passing the selected exercise as part of exercises list
-        currentIndex: '0', // Start with the first exercise (index 0)
+        exercises: JSON.stringify([exercise]),
+        currentIndex: '0',
       },
     });
+  };
+
+  const handleSignOutPress = () => {
+    router.push('/login');
+  }
+
+  const handleProfilePress = () => {
+    setMenuOpen(!menuOpen); 
   };
 
   const exampleExercises: Exercise[] = [
@@ -51,31 +59,46 @@ const HomeScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Welcome to Fitness Buddy</Text>
+      
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleProfilePress}>
+          <Icon name="user-circle" size={40} color="#000" />
+        </TouchableOpacity>
+        {menuOpen && (
+          <View style={styles.menu}>
+            
+            <TouchableOpacity style={styles.menuItem} onPress={() => alert('Settings')}>
+              <Text style={styles.menuText}>Settings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleSignOutPress}>
+              <Text style={styles.menuText}>Sign Out</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      <Text style={styles.title}>Welcome to FitnessEssence</Text>
       <Text style={styles.subtitle}>Select Your Fitness Goal</Text>
 
-      {/* Goal Selection */}
+
       <View style={styles.buttonGroup}>
         <CustomButton
           title="Weight Loss"
           onPress={() => selectGoal('weightLoss')}
-          accessibilityLabel="Navigate to the Weight Loss workout routine"
         />
         <CustomButton
           title="Muscle Gain"
           onPress={() => selectGoal('muscleGain')}
-          accessibilityLabel="Navigate to the Muscle Gain workout routine"
         />
       </View>
 
-      {/* Example Exercises */}
+   
       <Text style={styles.subtitle}>Try These Exercises</Text>
       {exampleExercises.map((exercise, index) => (
         <View key={index} style={styles.exampleContainer}>
           <CustomButton
             title={`Start: ${exercise.name}`}
             onPress={() => startExercise(exercise)}
-            accessibilityLabel={`Start the ${exercise.name} exercise`}
           />
           <Text style={styles.exampleDescription}>{exercise.description}</Text>
         </View>
@@ -94,14 +117,12 @@ const HomeScreen: React.FC = () => {
 const CustomButton = ({
   title,
   onPress,
-  accessibilityLabel,
 }: {
   title: string;
   onPress: () => void;
-  accessibilityLabel?: string;
 }) => (
   <View style={styles.buttonWrapper}>
-    <Button title={title} onPress={onPress} accessibilityLabel={accessibilityLabel} />
+    <Button title={title} onPress={onPress} />
   </View>
 );
 
@@ -110,6 +131,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     backgroundColor: '#f9f9f9',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 10,
   },
   title: {
     fontSize: 28,
@@ -153,6 +179,30 @@ const styles = StyleSheet.create({
     color: '#555',
     fontStyle: 'italic',
   },
+  
+  menu: {
+    position: 'absolute',
+    top: 50,
+    right: -10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+    zIndex: 2,
+  },
+  menuItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    cursor: 'pointer',
+  },
+  menuText: {
+    fontSize: 16,
+    color: '#000',
+  },
 });
 
 export default HomeScreen;
+

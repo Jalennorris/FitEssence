@@ -1,6 +1,8 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Image } from "react-native";
 import React from "react";
+import image from '../assets/images/LoginFitness.jpeg'
 import { useRouter } from 'expo-router';
+import { Ionicons } from 'react-native-vector-icons';
 
 const Login: React.FC = () => {
     const [data, setData] = React.useState({
@@ -43,6 +45,14 @@ const Login: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <Image source={image} style={styles.image} />
+             <TouchableOpacity 
+                onPress={() => router.push("/introduction")} 
+                style={styles.backButton} 
+                activeOpacity={0.7}
+            >
+                <Ionicons name="arrow-back" size={30} color="black" />
+            </TouchableOpacity>
             <Text style={styles.title}>Welcome Back!</Text>
             <Text style={styles.subtitle}>Enter Your Username and password</Text>
             <Text style={styles.label}>Username</Text>
@@ -70,6 +80,13 @@ const Login: React.FC = () => {
                     <Text style={styles.buttonText}>Login</Text>
                 )}
             </TouchableOpacity>
+            <TouchableOpacity
+            onPress={() => router.push("/signup")}>
+
+                <Text style={styles.loginText}>Don't have an account? Signup</Text>
+
+            </TouchableOpacity>
+
 
             {error && <Text style={styles.error}>{error}</Text>}
         </View>
@@ -82,6 +99,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         padding: 20,
+    },
+    backButton: {
+        position: 'absolute',
+        top: 40,  
+        left: 20, 
+        zIndex: 1, 
     },
     title: {
         fontSize: 24,
@@ -126,6 +149,10 @@ const styles = StyleSheet.create({
         color: "red",
         marginTop: 10,
     },
+    loginText : {
+        marginTop: 10,
+        color: "blue",
+    }
 });
 
 export default Login;
