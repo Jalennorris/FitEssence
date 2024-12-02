@@ -27,7 +27,7 @@ const Login: React.FC = () => {
                 } else if (data.username === "test" && data.password === "1234") {
                     console.log("Login successful");
                     setLoading(false); 
-                    router.push("/").catch(err => console.error("Navigation error:", err));
+                    router.push("/home").catch(err => console.error("Navigation error:", err));
                 } else {
                     setError("Invalid credentials, Please check your username and password");
                     setLoading(false); 

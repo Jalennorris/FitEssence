@@ -3,25 +3,26 @@ import { View, Text, StyleSheet } from 'react-native';
 
 interface CooldownScreenProps {
   onCooldownEnd: () => void;
-  cooldownTime?: number; // Default cooldown time in seconds
+  cooldownTime?: number;
 }
 
 const CooldownScreen: React.FC<CooldownScreenProps> = ({ onCooldownEnd, cooldownTime = 30 }) => {
   const [time, setTime] = useState(cooldownTime);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+   
+    const interval = time > 0 
+      ? setInterval(() => setTime((prev) => prev - 1), 1000) 
+      : null;
 
-    if (time > 0) {
-      interval = setInterval(() => {
-        setTime((prev) => prev - 1);
-      }, 1000);
-    } else {
+   
+    if (time === 0) {
       onCooldownEnd();
     }
 
+  
     return () => {
-      if (interval) clearInterval(interval); 
+      if (interval) clearInterval(interval);
     };
   }, [time, onCooldownEnd]);
 
@@ -39,17 +40,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#e3f2fd',
-    zIndex:4
   },
   cooldownText: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#555',
   },
   cooldownTimer: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#007BFF',
   },
 });
 

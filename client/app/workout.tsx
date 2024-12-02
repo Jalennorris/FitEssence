@@ -66,7 +66,7 @@ const WorkoutScreen: React.FC = () => {
     router.push({
       pathname: '/exercise',
       params: {
-        exercises: JSON.stringify(randomWorkouts), // Pass random workouts
+        exercises: JSON.stringify(randomWorkouts), 
         currentIndex: currentIndex.toString(),
       },
     });
@@ -78,7 +78,7 @@ const WorkoutScreen: React.FC = () => {
         {goal === 'weightLoss' ? 'Weight Loss Routine' : 'Muscle Gain Routine'}
       </Text>
 
-      {/* Button to generate random workouts */}
+      
       <View style={styles.buttonContainer}>
         <Button title="Generate 5 Random Workouts" onPress={generateRandomWorkouts} />
       </View>
@@ -99,7 +99,7 @@ const WorkoutScreen: React.FC = () => {
         )}
       </View>
 
-      {/* Start Exercise Button */}
+    
       <View style={styles.buttonContainer}>
         <Button title="Start Workout" onPress={handleStartExercise} disabled={randomWorkouts.length === 0} />
       </View>

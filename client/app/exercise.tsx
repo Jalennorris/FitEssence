@@ -38,7 +38,7 @@ const safeParseExercises = (data: string): Exercise[] => {
   }
 };
 
-// Type guard for Exercise validation
+
 const isExercise = (obj: any): obj is Exercise =>
   obj &&
   typeof obj.name === 'string' &&
@@ -69,7 +69,7 @@ const ExerciseScreen: React.FC = () => {
   }
 
   const { name, sets, reps, description } = exerciseList[index];
-  const [time, setTime] = useState(5);
+  const [time, setTime] = useState(1);
   const [isActive, setIsActive] = useState(false);
   const [currentSet, setCurrentSet] = useState(1);
 
@@ -105,7 +105,7 @@ const ExerciseScreen: React.FC = () => {
       setCurrentSet((prev) => prev + 1);
       setTime(30);
       setIsActive(false);
-      if (currentSet + 1 === 3) setIsCooldown(true); // Trigger cooldown on 3rd set
+      if (currentSet + 1 === 3) setIsCooldown(true); 
     } else {
       Alert.alert('All sets complete!', 'Moving to the next exercise.');
       handleNextExercise();
@@ -132,6 +132,7 @@ const ExerciseScreen: React.FC = () => {
       });
       setTime(30);
       setIsActive(true);
+      if (currentSet + 1 === 3) setIsCooldown(true);
     } else {
       Alert.alert('Workout Complete!', 'You’ve completed all exercises.');
       router.push('/workout');
@@ -155,6 +156,7 @@ const ExerciseScreen: React.FC = () => {
   if (isCooldown) {
     return <CooldownScreen onCooldownEnd={handleCooldownEnd} cooldownTime={30} />;
   }
+
 
   return (
     <View style={styles.container}>

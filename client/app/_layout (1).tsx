@@ -20,7 +20,7 @@ export default function RootLayout() {
       }}
        />
        <Stack.Screen
-       name='introduction'
+       name='home'
        options={{ headerShown: true
          
        }}
@@ -36,7 +36,7 @@ export default function RootLayout() {
        />
      
 
-      {/* Exercise Screen */}
+     
       <Stack.Screen 
         name="exercise" 
         options={{ 
